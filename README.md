@@ -17,6 +17,22 @@ A unified interface for text embedding models with visualization and similarity 
 
 ## Installation
 
+Clone the repo:
+
+```bash
+# SSH
+git clone git@github.com:SpencerPresley/Embeddings-and-Tokenizers.git
+
+# HTTPS
+git clone https://github.com/SpencerPresley/Embeddings-and-Tokenizers.git
+```
+
+Enter the directory
+
+```bash
+cd Embeddings-and-Tokenizers
+```
+
 Install dependencies
 
 ```bash

@@ -8,11 +8,12 @@ This module provides a unified interface for different embedding models, includi
 
 Each embedding type is wrapped in a consistent interface for easy swapping.
 """
-
-from dotenv import load_dotenv
-import numpy as np
-from typing import List, Optional
+from __future__ import annotations
 import os
+from typing import List
+from dotenv import load_dotenv
+
+import numpy as np
 
 # For visualization
 import matplotlib.pyplot as plt
@@ -76,24 +77,24 @@ class BaseEmbedding:
     def visualize_embeddings(
         self,
         texts: List[str],
-        labels: Optional[List[str]] = None,
-        dim_reduction: str = "pca",
-        dimensions: int = 2,
-        use_plotly: bool = False,
-        auto_cluster: bool = False,
-        n_clusters: int = 0,
+        labels: List[str] | None = None,
+        dim_reduction: str | None = "pca",
+        dimensions: int | None = 2,
+        use_plotly: bool | None = False,
+        auto_cluster: bool | None = False,
+        n_clusters: int | None = 0,
     ) -> None:
         """
         Visualize embeddings in 2D or 3D after dimensionality reduction
 
         Args:
-            texts: List of texts to embed and visualize
-            labels: Optional labels for each text (uses text snippets if not provided)
-            dim_reduction: Dimensionality reduction technique ('pca' only for now)
-            dimensions: Target dimensions (2 or 3)
-            use_plotly: Whether to use Plotly for interactive visualization (requires plotly package)
-            auto_cluster: Whether to automatically color points by cluster
-            n_clusters: Number of clusters to use (if auto_cluster is True). If 0, will estimate
+            texts (List[str]): List of texts to embed and visualize
+            labels (Optional[List[str]]): Optional labels for each text (uses text snippets if not provided)
+            dim_reduction (str): Dimensionality reduction technique ('pca' only for now)
+            dimensions (int): Target dimensions (2 or 3)
+            use_plotly (bool): Whether to use Plotly for interactive visualization (requires plotly package)
+            auto_cluster (bool): Whether to automatically color points by cluster
+            n_clusters (int): Number of clusters to use (if auto_cluster is True). If 0, will estimate
         """
         if dimensions not in [2, 3]:
             raise ValueError("Dimensions must be 2 or 3")
@@ -329,13 +330,17 @@ class OpenAIEmbedding(BaseEmbedding):
     Models available: "text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"
     """
 
-    def __init__(self, model_name: str = "text-embedding-3-small", batch_size: int = 8):
+    def __init__(
+        self,
+        model_name: str | None = "text-embedding-3-small",
+        batch_size: int | None = 8,
+    ):
         """
         Initialize OpenAI embeddings
 
         Args:
-            model_name: OpenAI embedding model to use
-            batch_size: Number of texts to embed in a single batch
+            model_name (str): OpenAI embedding model to use
+            batch_size (int): Number of texts to embed in a single batch
         """
         super().__init__()
         self.name = f"OpenAI ({model_name})"
@@ -380,7 +385,14 @@ class OpenAIEmbedding(BaseEmbedding):
             raise RuntimeError(f"Failed to initialize OpenAI embeddings: {e}")
 
     def embed_text(self, text: str) -> np.ndarray:
-        """Embed a single text string"""
+        """Embed a single text string
+
+        Args:
+            text (str): The text to embed
+
+        Returns:
+            np.ndarray: The embedded text
+        """
         if not self.is_ready:
             raise RuntimeError("Embedding model is not initialized")
 
@@ -407,12 +419,12 @@ class SentenceTransformerEmbedding(BaseEmbedding):
     - "paraphrase-multilingual-mpnet-base-v2" (multilingual, dimension=768)
     """
 
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, model_name: str | None = "all-MiniLM-L6-v2"):
         """
         Initialize the sentence transformer model
 
         Args:
-            model_name: Name of the sentence-transformer model
+            model_name (str): Name of the sentence-transformer model
         """
         super().__init__()
         self.name = f"SentenceTransformer ({model_name})"
@@ -431,7 +443,14 @@ class SentenceTransformerEmbedding(BaseEmbedding):
             raise RuntimeError(f"Failed to initialize SentenceTransformer: {e}")
 
     def embed_text(self, text: str) -> np.ndarray:
-        """Embed a single text string"""
+        """Embed a single text string
+
+        Args:
+            text (str): The text to embed
+
+        Returns:
+            np.ndarray: The embedded text
+        """
         if not self.is_ready:
             raise RuntimeError("Embedding model is not initialized")
 
@@ -439,23 +458,29 @@ class SentenceTransformerEmbedding(BaseEmbedding):
         return embedding
 
     def embed_batch(self, texts: List[str]) -> np.ndarray:
-        """Embed a batch of text strings"""
+        """Embed a batch of text strings
+
+        Args:
+            texts (List[str]): The texts to embed
+
+        Returns:
+            np.ndarray: The embedded texts
+        """
         if not self.is_ready:
             raise RuntimeError("Embedding model is not initialized")
-
         embeddings = self.model.encode(texts)
         return embeddings
 
 
 def get_embedding_model(
-    model_type: str = "sentence-transformer", **kwargs
+    model_type: str | None = "sentence-transformer", **kwargs
 ) -> BaseEmbedding:
     """
     Factory function to get an embedding model
 
     Args:
-        model_type: Type of embedding model ('openai', 'sentence-transformer')
-        **kwargs: Additional arguments for the specific model
+        model_type (str): Type of embedding model ('openai', 'sentence-transformer')
+        **kwargs: Additional arguments for the specific model, find them on the respecitive model's documentation
 
     Returns:
         An initialized embedding model

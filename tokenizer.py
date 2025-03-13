@@ -1,6 +1,9 @@
+from __future__ import annotations
+from typing import List, Union
+
 import tiktoken
 import numpy as np
-from typing import List, Union, Optional
+
 
 
 class TiktokenWrapper:
@@ -9,12 +12,12 @@ class TiktokenWrapper:
     with optional conversion to numpy arrays.
     """
 
-    def __init__(self, encoding_name: str = "cl100k_base"):
+    def __init__(self, encoding_name: str | None = "cl100k_base"):
         """
         Initialize the wrapper with the specified encoding.
 
         Args:
-            encoding_name: The name of the tiktoken encoding to use.
+            encoding_name (str): The name of the tiktoken encoding to use.
                            Default is "cl100k_base" (used by many Claude and GPT models).
                            Other options include "p50k_base", "r50k_base", etc.
         """
@@ -33,16 +36,16 @@ class TiktokenWrapper:
     def encode(
         self,
         text: str,
-        as_numpy: bool = False,
-        allowed_special: Optional[Union[set, str]] = "all",
+        as_numpy: bool  | None = False,
+        allowed_special: Union[set, str] | None = "all",
     ) -> Union[List[int], np.ndarray]:
         """
         Encode text into tokens.
 
         Args:
-            text: The text to encode
-            as_numpy: If True, return a numpy array instead of a list
-            allowed_special: Set of special tokens to allow in the encoding.
+            text (str): The text to encode
+            as_numpy (bool): If True, return a numpy array instead of a list
+            allowed_special (Union[set, str]): Set of special tokens to allow in the encoding.
                              Use "all" to allow all special tokens (default),
                              use set() to disallow all special tokens, or
                              provide a set of token strings to allow specific ones.

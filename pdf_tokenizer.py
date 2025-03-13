@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from langchain_community.document_loaders import PyMuPDFLoader
 import numpy as np
 from typing import List, Dict, Union, Optional
@@ -11,12 +13,12 @@ class PDFTokenizer:
     A class for extracting text from PDF files and tokenizing it using tiktoken.
     """
 
-    def __init__(self, encoding_name: str = "cl100k_base"):
+    def __init__(self, encoding_name: str | None = "cl100k_base"):
         """
         Initialize the PDF tokenizer.
 
         Args:
-            encoding_name: The encoding to use for tokenization (default: cl100k_base)
+            encoding_name (str): The encoding to use for tokenization (default: cl100k_base)
         """
         self.tokenizer = TiktokenWrapper(encoding_name)
         self.pdf_path = None
@@ -28,7 +30,7 @@ class PDFTokenizer:
         Load a PDF file and extract its text content.
 
         Args:
-            pdf_path: Path to the PDF file
+            pdf_path (str): Path to the PDF file
 
         Returns:
             True if successful, False otherwise
@@ -84,13 +86,13 @@ class PDFTokenizer:
         return self.pages[page_num].page_content
 
     def tokenize_full_document(
-        self, as_numpy: bool = False
+        self, as_numpy: bool | None = False
     ) -> Union[List[int], np.ndarray]:
         """
         Tokenize the entire document.
 
         Args:
-            as_numpy: Whether to return tokens as a numpy array
+            as_numpy (bool): Whether to return tokens as a numpy array
 
         Returns:
             List or numpy array of token IDs for the entire document
@@ -98,14 +100,14 @@ class PDFTokenizer:
         return self.tokenizer.encode(self.text, as_numpy=as_numpy)
 
     def tokenize_page(
-        self, page_num: int, as_numpy: bool = False
+        self, page_num: int, as_numpy: bool | None = False
     ) -> Union[List[int], np.ndarray]:
         """
         Tokenize a specific page.
 
         Args:
-            page_num: The 0-indexed page number
-            as_numpy: Whether to return tokens as a numpy array
+            page_num (int): The 0-indexed page number
+            as_numpy (bool): Whether to return tokens as a numpy array
 
         Returns:
             List or numpy array of token IDs for the specified page
@@ -137,19 +139,19 @@ class PDFTokenizer:
 
     def save_token_report(
         self,
-        output_file: str = "token_report.txt",
-        include_decoded: bool = True,
-        tokens_per_line: int = 10,
-        max_decoded_length: int = 20,
+        output_file: str | None = "token_report.txt",
+        include_decoded: bool | None = True,
+        tokens_per_line: int | None = 10,
+        max_decoded_length: int | None = 20,
     ) -> None:
         """
         Generate and save a detailed token report to a file.
 
         Args:
-            output_file: Path to save the report
-            include_decoded: Whether to include decoded token text
-            tokens_per_line: Number of tokens to display per line
-            max_decoded_length: Maximum length for decoded token text
+            output_file (str): Path to save the report
+            include_decoded (bool): Whether to include decoded token text
+            tokens_per_line (int): Number of tokens to display per line
+            max_decoded_length (int): Maximum length for decoded token text
         """
         page_count = self.get_page_count()
         total_tokens = self.get_total_token_count()
