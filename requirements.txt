@@ -1,0 +1,12 @@
+tiktoken
+numpy
+black
+pymupdf
+langchain_community
+sentence-transformers
+langchain-openai
+matplotlib
+scikit-learn
+python-dotenv
+plotly
+pandas

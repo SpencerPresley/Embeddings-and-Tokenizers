@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.env
+LN3-MPI-Intro.pdf
+*.html
+*.png
+*.pdf
